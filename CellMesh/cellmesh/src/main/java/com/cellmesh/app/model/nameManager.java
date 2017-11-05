@@ -18,6 +18,7 @@ public class nameManager {
 
     public nameManager(Long nodeId, String myName) {
         this.knownNames = new TreeMap<Long, String>();
+        Log.d("nameManager", "Name manager created for " + myName);
         this.addName(nodeId, myName);
     }
 
@@ -27,6 +28,7 @@ public class nameManager {
 
     public void addName(Long nodeId, String name) {
         this.knownNames.put(nodeId, name);
+        Log.d("nameManager", "Name added: " + name);
         hashDirty = true;
     }
 

@@ -42,6 +42,10 @@ public class Node implements TransportListener
 	private String name;
 	private nameManager nm;
 
+	final private int SEND_NAMEHASH = 1;
+	final private int SEND_NAMEDATA = 2;
+	final private int SEND_MESSAGE = 10;
+
 	public Node(MainActivity activity,INodeListener listener,String name)
 	{
 		this.name=name;
@@ -73,7 +77,7 @@ public class Node implements TransportListener
 	public Map<Long,String> getNamesMap() {
 		return Collections.unmodifiableMap(nm.getMap());
 	}
-	
+
 	private void configureLogging()
 	{
 		NSLoggerAdapter adapter = (NSLoggerAdapter)
@@ -108,12 +112,25 @@ public class Node implements TransportListener
 			return;
 		listener.onDataSent(frameData,nodeId);
 		for(Link link : links)
-			link.sendFrame(frameData.getBytes());
+			link.sendFrame(addOp(SEND_MESSAGE, frameData));
 	}
 
-	public void sendMessage(String frameData, Link target)
+	public void broadcastMessage(byte[] frameData) {
+		if ( !links.isEmpty() ) {
+			// listener.onDataSent(frameData, nodeId);
+			for ( Link link : links ) {
+				link.sendFrame(frameData);
+			}
+		}
+	}
+	public void sendMessage(int op, String frameData, Link target)
 	{
-		target.sendFrame(frameData.getBytes());
+		target.sendFrame(addOp(op, frameData));
+	}
+	private byte[] addOp(int op, String data) {
+		byte[] r = ('x' + data).getBytes();
+		r[0] = (byte) op;
+		return r;
 	}
 
 	//Call this when the names need to be updated by the UID
@@ -138,7 +155,7 @@ public class Node implements TransportListener
 		ids.add(link.getNodeId());
 
 		// Send our name data hash.
-		sendMessage('1' + nm.getHash(), link);
+		sendMessage(SEND_NAMEHASH, nm.getHash(), link);
 
 		listener.onConnected(Collections.unmodifiableSet(ids),link.getNodeId());
 	}
@@ -157,8 +174,8 @@ public class Node implements TransportListener
 			// Send our names.
 			Map<Long, String> map = nm.getMap();
 			for ( Map.Entry<Long,String> item : map.entrySet() ) {
-				String message =  '2' + Long.toString(item.getKey()) + ':' + item.getValue();
-				sendMessage(message, link);
+				String message =  Long.toString(item.getKey()) + ':' + item.getValue();
+				sendMessage(SEND_NAMEDATA, message, link);
 			}
 		}
 	}
@@ -179,11 +196,11 @@ public class Node implements TransportListener
 			case 0:
 				// Reserved
 				break;
-			case 1:
+			case SEND_NAMEHASH:
 				// Name hash received
 				compareHash(data, link);
 				break;
-			case 2:
+			case SEND_NAMEDATA:
 				// Name data received
 				if ( data.indexOf(':') > 0 ) {
 					Long srcId = Long.parseLong(data.substring(0, data.indexOf(':')));
@@ -191,7 +208,7 @@ public class Node implements TransportListener
 
 					nm.addName(srcId, name);
 				}
-			case 10:
+			case SEND_MESSAGE:
 				// Message received
 				listener.onDataReceived(data, link.getNodeId());
 		}
