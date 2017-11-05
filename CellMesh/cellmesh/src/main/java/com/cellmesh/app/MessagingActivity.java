@@ -58,7 +58,7 @@ public class MessagingActivity extends Activity implements INodeListener, View.O
 
 		peerAdapter= new ArrayAdapter<>(
 				this,
-				android.R.layout.simple_list_item_1,
+				R.layout.peer_layout,
 				peerList);
 		messageAdapter = new ArrayAdapter<>(this,
 				android.R.layout.simple_list_item_1,
