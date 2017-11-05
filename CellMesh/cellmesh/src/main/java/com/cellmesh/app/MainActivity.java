@@ -113,12 +113,14 @@ public class MainActivity extends AppCompatActivity implements INodeListener
 	@Override
 	public void onConnected(Set<Long> readOnlyIds, Long newId) {
 		listItems2.add(names.get(newId));
+		adapter2.notifyDataSetChanged();
 	}
 
 	@Override
 	public void onDisconnected(Set<Long> readOnlyIds, Long oldLinkId) {
 		int index = listItems2.indexOf(names.get(oldLinkId));
 		listItems2.remove(index);
+		adapter2.notifyDataSetChanged();
 	}
 
 	public void onDataReceived(String newMessage, Long fromLinkId) {
