@@ -32,7 +32,6 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
 
-        android:headerDividersEnabled="false"
         android:padding="5dp"
         android:textAppearance="@android:style/TextAppearance.Small"
         app:layout_constraintBottom_toTopOf="@id/separator"
@@ -101,6 +100,7 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/MessagesLabel">
+        android:textAppearance="@android:style/TextAppearance.Small"
 
     </ListView>
 
