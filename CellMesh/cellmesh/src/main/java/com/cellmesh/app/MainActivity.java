@@ -65,15 +65,25 @@ public class MainActivity extends AppCompatActivity implements INodeListener
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu)
-	{
+	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.menu_main, menu);
 		return true;
 	}
 
-	public void onEmergency(Long fromLinkId){
+	public void onDisconected(){
+		//remove from array of peers
+	}
+	public void onConnected(){
+		//add to array of peers
+	}
 
+	public void BroadcastMessage(String message) {
+		node.broadcastMessage(message);
+	}
+
+	public void onEmergency(String newMessage, Long fromLinkId) {
+		onDataReceived( "<b>" + newMessage + "</b>", fromLinkId);
 	}
 
 	@Override
