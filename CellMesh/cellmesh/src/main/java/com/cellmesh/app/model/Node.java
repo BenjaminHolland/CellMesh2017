@@ -138,7 +138,7 @@ public class Node implements TransportListener
 		listener.onNamesUpdated(null);
 	}
 	private void handleEmergencyMessage(){
-		listener.onEmergency(null);
+		//listener.onEmergency(null);
 	}
 	//region TransportListener
 	@Override
