@@ -18,7 +18,7 @@ import java.util.Set;
 import com.cellmesh.app.model.INodeListener;
 import com.cellmesh.app.model.Node;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends AppCompatActivity implements INodeListener
 {
 	private ListView peersTextView;
 	private ListView chatTextView;
@@ -86,11 +86,32 @@ public class MainActivity extends AppCompatActivity
 		onDataReceived( "<b>" + newMessage + "</b>", fromLinkId);
 	}
 
+	@Override
+	public void onNamesUpdated(Map<Long, String> names) {
+		names = node.getNamesMap();
+	}
+
+	@Override
+	public void onConnected(Set<Long> readOnlyIds, Long newId) {
+
+	}
+
+	@Override
+	public void onDisconnected(Set<Long> readOnlyIds, Long oldLinkId) {
+
+	}
+
 	public void onDataReceived(String newMessage, Long fromLinkId) {
 
 		listItems.add(names.get(fromLinkId) + " ---> " + newMessage);
 		adapter.notifyDataSetChanged();
 	}
+
+	@Override
+	public void onDataSent(String newMessage, Long fromLinkId) {
+
+	}
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
