@@ -29,14 +29,12 @@ public interface INodeListener {
     UI MUST update to reflect new Link/Name associations.
      */
     void onNamesUpdated(Map<Long, String> names);
-
     /*
     Called when a member joins our swarm.
     UI MAY display a notification acknowledging the event.
     UI MAY keep a friends list. This is not a priority goal.
      */
     void onConnected(Set<Long> readOnlyIds, Long newId);
-
     /*
     Called when a member leaves our swarm.
     UI MAY display a notification acknloging the event.

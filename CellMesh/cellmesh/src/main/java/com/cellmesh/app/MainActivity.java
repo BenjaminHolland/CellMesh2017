@@ -1,12 +1,16 @@
 package com.cellmesh.app;
 
+import android.app.LauncherActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -16,10 +20,14 @@ import com.cellmesh.app.model.Node;
 
 public class MainActivity extends AppCompatActivity
 {
-	private TextView peersTextView;
-	private TextView framesTextView;
+	private ListView peersTextView;
+	private ListView chatTextView;
+
+	ArrayList<String> listItems = new ArrayList<String>();
+	ArrayAdapter<String> adapter;
 
 	Node node;
+	Map<Long,String> names;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -27,12 +35,15 @@ public class MainActivity extends AppCompatActivity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		peersTextView = (TextView) findViewById(R.id.peersTextView);
-		//framesTextView = (TextView) findViewById(R.id.framesTextView);
+		adapter=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems);
+		peersTextView = (ListView) findViewById(R.id.peersTextView);
+		//peersTextView.setAdapter(adapter);
+		chatTextView = (ListView) findViewById(R.id.recieved_message);
+		chatTextView.setAdapter(adapter);
 
 		//UI Must gather a name and create a listener before calling node.start
 		node = new Node(this,null,"");
-
+		names = node.getNamesMap();
 	}
 
 	@Override
@@ -59,6 +70,15 @@ public class MainActivity extends AppCompatActivity
 		return true;
 	}
 
+	public void onEmergency(Long fromLinkId){
+
+	}
+
+	public void onDataReceived(String newMessage, Long fromLinkId) {
+
+		listItems.add(names.get(fromLinkId) + " ---> " + newMessage);
+		adapter.notifyDataSetChanged();
+	}
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
