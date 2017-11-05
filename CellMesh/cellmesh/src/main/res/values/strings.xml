@@ -2,7 +2,7 @@
 	<string name="app_name">CellMesh</string>
 
 	<string name="hello_world">Hello world!</string>
-	<string name="action_settings">Settings</string>
+	<string name="action_settings">Change Username</string>
     <string name="startBtn">Start</string>
     <string name="enter_name">Enter name</string>
     <string name="preference_file_key">prefs</string>

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -93,6 +94,7 @@ public class MessagingActivity extends Activity implements INodeListener, View.O
 		});
 		Send_button.setOnClickListener(this);
 	}
+
 
 	public void onClick(View v) {
 		String message = Message.getText().toString();
@@ -201,6 +203,16 @@ public class MessagingActivity extends Activity implements INodeListener, View.O
 		//noinspection SimplifiableIfStatement
 		if (id == R.id.action_settings)
 		{
+			Intent intent = new Intent(MessagingActivity.this, MainActivity.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+			String message = ""; //reset the name
+
+			SharedPreferences sharedPref = MessagingActivity.this.getApplicationContext().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+			SharedPreferences.Editor editor = sharedPref.edit();
+			editor.putString(getString(R.string.pref_name), message);
+			editor.apply();
+			startActivity(intent);
+			finish();
 			return true;
 		}
 
