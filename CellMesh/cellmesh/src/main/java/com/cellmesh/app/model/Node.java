@@ -46,9 +46,11 @@ public class Node implements TransportListener
 	private Set<Long> ids=new HashSet<>();
 	private String name;
 	private nameManager nm;
+	private messageManager mm;
 
 	final private int SEND_NAMEHASH = 1;
 	final private int SEND_NAMEDATA = 2;
+	final private int SEND_MESSAGEHASH = 3;
 	final private int SEND_MESSAGE = 10;
 
 	public Node(Activity activity, INodeListener listener, String name)
@@ -70,6 +72,7 @@ public class Node implements TransportListener
 			nodeId = -nodeId;
 
 		nm = new nameManager(nodeId, name);
+		mm = new messageManager();
 
 		ids.add(nodeId);
 		configureLogging();
@@ -126,11 +129,13 @@ public class Node implements TransportListener
 
 	public void broadcastMessage(String frameData)
 	{
+		Long time = System.currentTimeMillis();
+		mm.addMessage(time, nodeId, frameData);
 		listener.onDataSent(frameData, nodeId);
 		if(links.isEmpty())
 			return;
 		for(Link link : links)
-			link.sendFrame(addOp(SEND_MESSAGE, frameData));
+			link.sendFrame(addOp(SEND_MESSAGE, Long.toString(time) + ":"  + Long.toString(nodeId) + ":" + frameData));
 	}
 
 	public void sendMessage(int op, String frameData, Link target)
@@ -167,7 +172,7 @@ public class Node implements TransportListener
 
 		// Send our name data hash.
 		sendMessage(SEND_NAMEHASH, nm.getHash(), link);
-
+		sendMessage(SEND_MESSAGEHASH, mm.getHash(), link);
 		listener.onConnected(Collections.unmodifiableSet(ids),link.getNodeId());
 	}
 
@@ -181,14 +186,40 @@ public class Node implements TransportListener
 	}
 
 	private void compareHash(String hash, Link link) {
+		int op = SEND_NAMEDATA;
 		if ( !hash.equals(nm.getHash()) ) {
 			// Send our names.
 			Map<Long, String> map = nm.getMap();
 			for ( Map.Entry<Long,String> item : map.entrySet() ) {
 				String message =  Long.toString(item.getKey()) + ':' + item.getValue();
-				sendMessage(SEND_NAMEDATA, message, link);
+				sendMessage(op, message, link);
 			}
 		}
+	}
+
+	private void compareHashMessages(String hash, Link link) {
+		int op = SEND_MESSAGE;
+		if ( !hash.equals(mm.getHash()) ) {
+			// Send our names.
+			Map<Long, Message> map = mm.getMap();
+			for ( Map.Entry<Long, Message> item : map.entrySet() ) {
+				//String message =  Long.toString(item.getKey()) + ':' + item.getValue();
+				String message = item.getValue().getSendString();
+				sendMessage(op, message, link);
+			}
+		}
+	}
+
+	private void forwardMessage(Long time, Long fromId, String message, Long srcId) {
+		for ( Link l : links ) {
+			if ( l.getNodeId() != srcId && l.getNodeId() != fromId ) {
+				sendMessage(SEND_MESSAGE, Long.toString(time) + ":" + Long.toString(fromId) + ":" + message, l);
+			}
+		}
+	}
+
+	public Map<Long, Message> getMessageHistory() {
+		return mm.getMap();
 	}
 	@TargetApi(Build.VERSION_CODES.KITKAT)
 	@Override
@@ -221,9 +252,26 @@ public class Node implements TransportListener
 					doNameUpdate();
 				}
 				break;
+			case SEND_MESSAGEHASH:
+				compareHashMessages(data, link);
+				break;
+			case SEND_MESSAGE:
+				if ( data.indexOf(':') > 0 ) {
+					Long time = Long.parseLong(data.substring(0, data.indexOf(':')));
+					String s = data.substring(data.indexOf(':') + 1, data.length());
+					Long fromId = Long.parseLong(s.substring(0, s.indexOf(':')));
+					String message = s.substring(s.indexOf(':') + 1, s.length());
+					mm.addMessage(time, fromId, message);
+					listener.onDataReceived(message, link.getNodeId());
+
+					forwardMessage(time, fromId, message, link.getNodeId());
+				}
+				break;
+			/*
 			case SEND_MESSAGE:
 				// Message received
 				listener.onDataReceived(data, link.getNodeId());
+			*/
 		}
 	}
 	//endregion

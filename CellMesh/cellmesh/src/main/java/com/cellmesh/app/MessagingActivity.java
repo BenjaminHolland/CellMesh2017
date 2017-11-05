@@ -19,6 +19,8 @@ import android.widget.TextView;
 
 import com.cellmesh.app.model.INodeListener;
 import com.cellmesh.app.model.Node;
+import com.cellmesh.app.model.Message;
+import com.cellmesh.app.model.messageManager;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -38,6 +40,8 @@ public class MessagingActivity extends Activity implements INodeListener, View.O
 	Node node;
 	Map<Long,String> names;
 
+	messageManager mm;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -53,6 +57,8 @@ public class MessagingActivity extends Activity implements INodeListener, View.O
 		}
 
 		setContentView(R.layout.actvity_messaging);
+
+		mm = new messageManager();
 
 		adapter2=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems2);
 		peersTextView = (ListView) findViewById(R.id.peersTextView);
@@ -181,10 +187,22 @@ public class MessagingActivity extends Activity implements INodeListener, View.O
 
 	@Override
 	public void onDataReceived(String newMessage, Long fromLinkId) {
-		listItems.add(names.get(fromLinkId) + " ---> " + newMessage);
+		Map<Long, Message> messages = node.getMessageHistory();
+
+		listItems.clear();
+		for ( Map.Entry<Long, Message> message : messages.entrySet() ) {
+			listItems.add(getName(message.getValue().getFromId()) + " --> " + message.getValue().toString());
+		}
+
 		adapter.notifyDataSetChanged();
 	}
 
+	private String getName(Long id) {
+		if ( names.containsKey(id) ) {
+			return names.get(id);
+		}
+		return "Unknown";
+	}
 	@Override
 	public void onDataSent(String newMessage, Long fromLinkId) {
 		onDataReceived(newMessage, fromLinkId);
