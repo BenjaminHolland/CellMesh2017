@@ -77,7 +77,7 @@ public class MessagingActivity extends Activity implements INodeListener, View.O
 					case EditorInfo.IME_ACTION_GO:
 					case EditorInfo.IME_ACTION_SEND:
 					{
-						Send_button.performClick();
+						Send_button.callOnClick();
 					}
 					default:
 						if(keyEvent!=null){
