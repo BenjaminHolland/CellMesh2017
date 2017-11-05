@@ -81,7 +81,7 @@ public class Node implements TransportListener
 	public Set<Long> getPeerIds () {
 		return Collections.unmodifiableSet(ids);
 	}
-	
+
 	public Map<Long,String> getNamesMap() {
 		return Collections.unmodifiableMap(nm.getMap());
 	}
@@ -215,6 +215,7 @@ public class Node implements TransportListener
 					String name = data.substring(data.indexOf(':') + 1, data.length());
 
 					nm.addName(srcId, name);
+					doNameUpdate();
 				}
 				//break;
 			case SEND_MESSAGE:
