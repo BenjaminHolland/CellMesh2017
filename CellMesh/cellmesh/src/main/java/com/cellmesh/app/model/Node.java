@@ -78,6 +78,10 @@ public class Node implements TransportListener
 		return nodeId;
 	}
 
+	public Set<Long> getPeerIds () {
+		return Collections.unmodifiableSet(ids);
+	}
+	
 	public Map<Long,String> getNamesMap() {
 		return Collections.unmodifiableMap(nm.getMap());
 	}
