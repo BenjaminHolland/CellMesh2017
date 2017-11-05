@@ -28,9 +28,10 @@ public class MainActivity extends Activity
             startActivity(intent);
             finish();
         }
-        setContentView(R.layout.activity_main);
 
+        setContentView(R.layout.activity_main);
         Button button = (Button) findViewById(R.id.startBtn);
+
 
         button.setOnClickListener( new View.OnClickListener() {
             @Override

@@ -6,13 +6,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.cellmesh.app.model.INodeListener;
 import com.cellmesh.app.model.Node;
@@ -64,7 +67,33 @@ public class MessagingActivity extends Activity implements INodeListener
 		node = new Node(MessagingActivity.this,this,name);
 		names = node.getNamesMap();
 
+
 		Button Send_button = (Button) findViewById(R.id.Send);
+		Message.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+			@Override
+			public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+				switch (i){
+					case EditorInfo.IME_ACTION_DONE:
+					case EditorInfo.IME_ACTION_GO:
+					case EditorInfo.IME_ACTION_SEND:
+					{
+						BroadcastMessage(Message.getText().toString());
+						onDataReceived(Message.getText().toString(), node.getNodeId());
+						Message.setText("");
+
+					}
+					default:
+						if(keyEvent!=null){
+							if(keyEvent.getKeyCode()==KeyEvent.KEYCODE_ENTER){
+								textView.onEditorAction(EditorInfo.IME_ACTION_DONE);
+							}
+						}
+				}
+				return false;
+
+
+			}
+		});
 		Send_button.setOnClickListener( new View.OnClickListener() {
 			@Override
 			public void onClick(View v){
