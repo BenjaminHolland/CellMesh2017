@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements INodeListener
 
 		for ( Long id : ids ) {
 			if ( names.get(id) != null ) {
-				if ( id.equals(node.getNodeId()) )
+				if ( !id.equals(node.getNodeId()) )
 					listItems2.add(names.get(id));
 			} else {
 				listItems2.add("Unknown");
