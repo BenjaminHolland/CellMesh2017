@@ -26,6 +26,7 @@ public class MainActivity extends Activity
             Intent intent = new Intent(this, MessagingActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
+            finish();
         }
         setContentView(R.layout.activity_main);
 
@@ -47,6 +48,7 @@ public class MainActivity extends Activity
                 editor.putString(getString(R.string.pref_name), message);
                 editor.apply();
                 startActivity(intent);
+                finish();
             }
         });
     }
