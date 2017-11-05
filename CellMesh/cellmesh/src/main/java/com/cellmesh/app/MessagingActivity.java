@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 
-public class MessagingActivity extends Activity implements INodeListener
+public class MessagingActivity extends Activity implements INodeListener, View.OnClickListener
 {
 	private ListView peersTextView;
 	private ListView chatTextView;
@@ -68,7 +68,7 @@ public class MessagingActivity extends Activity implements INodeListener
 		names = node.getNamesMap();
 
 
-		Button Send_button = (Button) findViewById(R.id.Send);
+		final Button Send_button = (Button) findViewById(R.id.Send);
 		Message.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 			@Override
 			public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
@@ -77,10 +77,7 @@ public class MessagingActivity extends Activity implements INodeListener
 					case EditorInfo.IME_ACTION_GO:
 					case EditorInfo.IME_ACTION_SEND:
 					{
-						BroadcastMessage(Message.getText().toString());
-						onDataReceived(Message.getText().toString(), node.getNodeId());
-						Message.setText("");
-
+						Send_button.callOnClick();
 					}
 					default:
 						if(keyEvent!=null){
@@ -94,14 +91,19 @@ public class MessagingActivity extends Activity implements INodeListener
 
 			}
 		});
-		Send_button.setOnClickListener( new View.OnClickListener() {
-			@Override
-			public void onClick(View v){
-				BroadcastMessage(Message.getText().toString());
-				onDataReceived(Message.getText().toString(), node.getNodeId());
-				Message.setText("");
-			}
-		});
+		Send_button.setOnClickListener(this);
+	}
+
+	public void onClick(View v) {
+		String message = Message.getText().toString();
+
+		if ( message.equals("") ) {
+			return;
+		}
+
+		BroadcastMessage(message);
+
+		Message.setText("");
 	}
 
 	@Override
@@ -177,6 +179,7 @@ public class MessagingActivity extends Activity implements INodeListener
 		updatePeerList();
 	}
 
+	@Override
 	public void onDataReceived(String newMessage, Long fromLinkId) {
 		listItems.add(names.get(fromLinkId) + " ---> " + newMessage);
 		adapter.notifyDataSetChanged();
@@ -184,7 +187,7 @@ public class MessagingActivity extends Activity implements INodeListener
 
 	@Override
 	public void onDataSent(String newMessage, Long fromLinkId) {
-
+		onDataReceived(newMessage, fromLinkId);
 	}
 
 	@Override
