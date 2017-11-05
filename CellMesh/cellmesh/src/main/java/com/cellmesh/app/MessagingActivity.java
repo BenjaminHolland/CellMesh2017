@@ -40,13 +40,13 @@ public class MessagingActivity extends Activity implements INodeListener
 	{
 		super.onCreate(savedInstanceState);
 
-		SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+		SharedPreferences sharedPref = this.getApplicationContext().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 		String name = sharedPref.getString(getString(R.string.pref_name), "");
 
 		if ( name.equals("") ) {
-			/*Intent intent = new Intent(MessagingActivity.this, MainActivity.class);
+			Intent intent = new Intent(MessagingActivity.this, MainActivity.class);
 			intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-			startActivity(intent);*/
+			startActivity(intent);
 		}
 
 		setContentView(R.layout.actvity_messaging);

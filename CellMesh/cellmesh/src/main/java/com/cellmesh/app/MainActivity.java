@@ -19,11 +19,11 @@ public class MainActivity extends Activity
     {
         super.onCreate(savedInstanceState);
 
-        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = this.getApplicationContext().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         String name = sharedPref.getString(getString(R.string.pref_name), "");
 
         if ( !name.equals("") ) {
-            Intent intent = new Intent(MainActivity.this, MessagingActivity.class);
+            Intent intent = new Intent(this, MessagingActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
         }
@@ -42,7 +42,7 @@ public class MainActivity extends Activity
                 if ( message.equals("") ) {
                     return;
                 }
-                SharedPreferences sharedPref = MainActivity.this.getPreferences(Context.MODE_PRIVATE);
+                SharedPreferences sharedPref = MainActivity.this.getApplicationContext().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putString(getString(R.string.pref_name), message);
                 editor.apply();
