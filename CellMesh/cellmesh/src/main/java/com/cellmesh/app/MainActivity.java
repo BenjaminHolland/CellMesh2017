@@ -112,7 +112,12 @@ public class MainActivity extends AppCompatActivity implements INodeListener
 
 	@Override
 	public void onConnected(Set<Long> readOnlyIds, Long newId) {
-		listItems2.add(names.get(newId));
+		if (names.get(newId) == null) {
+			listItems2.add("anonymous");
+		}
+		else{
+			listItems2.add(names.get(newId));
+		}
 		adapter2.notifyDataSetChanged();
 	}
 
