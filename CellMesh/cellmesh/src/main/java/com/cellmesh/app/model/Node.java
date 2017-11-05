@@ -59,10 +59,8 @@ public class Node implements TransportListener
 		SharedPreferences sharedPref = activity.getPreferences(Context.MODE_PRIVATE);
 		nodeId = sharedPref.getLong("nodeID", 0);
 
-		do
-		{
+		while (nodeId == 0)
 			nodeId = new Random().nextLong();
-		} while (nodeId == 0);
 
 		SharedPreferences.Editor editor = sharedPref.edit();
 		editor.putLong("nodeID", nodeId);
