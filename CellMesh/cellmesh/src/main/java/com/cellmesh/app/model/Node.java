@@ -135,10 +135,10 @@ public class Node implements TransportListener
 
 	//Call this when the names need to be updated by the UID
 	private void doNameUpdate(){
-		listener.onNamesUpdated(null);
+		listener.onNamesUpdated(nm.getMap());
 	}
 	private void handleEmergencyMessage(){
-		listener.onEmergency(null);
+		//listener.onEmergency(null);
 	}
 	//region TransportListener
 	@Override
@@ -189,7 +189,7 @@ public class Node implements TransportListener
 		02: node data received
 		10: chat message received
 		 */
-		int op = Integer.parseInt(new String(frameData, 0, 1, StandardCharsets.US_ASCII));
+		int op = frameData[0];
 		String data = new String(frameData, 1, frameData.length, StandardCharsets.US_ASCII);
 
 		switch(op) {

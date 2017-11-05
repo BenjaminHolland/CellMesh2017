@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements INodeListener
 		chatTextView.setAdapter(adapter);
 
 		//UI Must gather a name and create a listener before calling node.start
-		node = new Node(this,null,"");
+		node = new Node(this,this,"potato");
 		names = node.getNamesMap();
 	}
 
