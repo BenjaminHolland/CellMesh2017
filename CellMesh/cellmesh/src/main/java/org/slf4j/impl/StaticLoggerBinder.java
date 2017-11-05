@@ -45,4 +45,4 @@ public class StaticLoggerBinder
 	{
 		return factoryClassStr;
 	}
-} // StaticLoggerBinder
+}

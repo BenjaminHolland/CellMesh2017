@@ -60,5 +60,9 @@ public interface INodeListener {
     Called when we receive an emergency notification from another link.
     The UI MUST display a message acknologing the event.
      */
+<<<<<<< HEAD
+    void onEmergency(String Message, Long fromLinkId);
+=======
     void onEmergency(String newMessage, Long fromLinkId);
+>>>>>>> 3d8fd1a3608b50aa6c42f779473a2c192567210b
 }

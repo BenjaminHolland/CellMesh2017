@@ -1,80 +1,88 @@
 package com.cellmesh.app;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.Button;
+import android.widget.EditText;
 
-import java.util.Random;
-
-import com.cellmesh.app.model.Node;
-
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends Activity
 {
-	private TextView peersTextView;
-	private TextView framesTextView;
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
 
-	Node node;
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        String name = sharedPref.getString(getString(R.string.pref_name), "");
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+        if ( !name.equals("") ) {
+            Intent intent = new Intent(MainActivity.this, MessagingActivity.class);
+            startActivity(intent);
+        }
+        setContentView(R.layout.activity_main);
 
-		peersTextView = (TextView) findViewById(R.id.peersTextView);
-		framesTextView = (TextView) findViewById(R.id.framesTextView);
+        Button button = (Button) findViewById(R.id.startBtn);
 
-		//UI Must gather a name and create a listener before calling node.start
-		node = new Node(this,null,"");
+        button.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent(MainActivity.this, MessagingActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                EditText editText = (EditText) findViewById(R.id.nameInput);
+                String message = editText.getText().toString();
 
-	}
+                if ( message.equals("") ) {
+                    return;
+                }
+                SharedPreferences sharedPref = MainActivity.this.getPreferences(Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString(getString(R.string.pref_name), message);
+                editor.apply();
+                startActivity(intent);
+            }
+        });
+    }
 
-	@Override
-	protected void onStart()
-	{
-		super.onStart();
-		node.start();
-	}
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+    }
 
-	@Override
-	protected void onStop()
-	{
-		super.onStop();
+    @Override
+    protected void onStop()
+    {
+        super.onStop();
+    }
 
-		if(node != null)
-			node.stop();
-	}
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu)
-	{
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.menu_main, menu);
-		return true;
-	}
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item)
-	{
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings)
+        {
+            return true;
+        }
 
-		//noinspection SimplifiableIfStatement
-		if (id == R.id.action_settings)
-		{
-			return true;
-		}
-
-		return super.onOptionsItemSelected(item);
-	}
-
-	private static boolean started = false;
-
-
-
+        return super.onOptionsItemSelected(item);
+    }
 } // MainActivity

@@ -3,10 +3,9 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 22
     buildToolsVersion '26.0.2'
-
     defaultConfig {
         applicationId "com.cellmesh.app"
-        minSdkVersion 16
+        minSdkVersion 22
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
@@ -27,10 +26,12 @@ android {
         incremental true
         preDexLibraries false
     }
+    productFlavors {
+    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     //compile(name:'underdark-release', ext:'aar')
     compile 'com.android.support:appcompat-v7:22.2.1'
     compile project(':underdark')
