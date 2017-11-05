@@ -2,9 +2,13 @@ package com.cellmesh.app.model;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
 import android.util.Xml;
+
+import com.cellmesh.app.R;
 
 import org.slf4j.impl.StaticLoggerBinder;
 import org.w3c.dom.NodeList;
@@ -52,10 +56,17 @@ public class Node implements TransportListener
 		this.name=name;
 		this.activity = activity;
 		this.listener=listener;
+		SharedPreferences sharedPref = activity.getPreferences(Context.MODE_PRIVATE);
+		nodeId = sharedPref.getLong("nodeID", 0);
+
 		do
 		{
 			nodeId = new Random().nextLong();
 		} while (nodeId == 0);
+
+		SharedPreferences.Editor editor = sharedPref.edit();
+		editor.putLong("nodeID", nodeId);
+		editor.apply();
 
 		if(nodeId < 0)
 			nodeId = -nodeId;

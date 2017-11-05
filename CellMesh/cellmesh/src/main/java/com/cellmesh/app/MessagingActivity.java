@@ -1,5 +1,8 @@
 package com.cellmesh.app;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -17,7 +20,7 @@ import java.util.Set;
 import com.cellmesh.app.model.INodeListener;
 import com.cellmesh.app.model.Node;
 
-public class MessagingActivity extends AppCompatActivity implements INodeListener
+public class MessagingActivity extends Activity implements INodeListener
 {
 	private ListView peersTextView;
 	private ListView chatTextView;
@@ -35,6 +38,14 @@ public class MessagingActivity extends AppCompatActivity implements INodeListene
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+
+		SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+		String name = sharedPref.getString(getString(R.string.pref_name), "");
+
+		if ( name.equals("") ) {
+			// go to other activity
+		}
+
 		setContentView(R.layout.actvity_messaging);
 
 		adapter2=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems2);
@@ -47,7 +58,7 @@ public class MessagingActivity extends AppCompatActivity implements INodeListene
 
 		Message = (EditText) findViewById(R.id.message);
 		//UI Must gather a name and create a listener before calling node.start
-		node = new Node(MessagingActivity.this,this,"namidy name name");
+		node = new Node(MessagingActivity.this,this,name);
 		names = node.getNamesMap();
 
 		Button Send_button = (Button) findViewById(R.id.Send);

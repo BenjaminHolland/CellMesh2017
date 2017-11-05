@@ -1,19 +1,31 @@
 package com.cellmesh.app;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends Activity
 {
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        String name = sharedPref.getString(getString(R.string.pref_name), "");
+
+        if ( !name.equals("") ) {
+            Intent intent = new Intent(MainActivity.this, MessagingActivity.class);
+            startActivity(intent);
+        }
         setContentView(R.layout.activity_main);
 
         Button button = (Button) findViewById(R.id.startBtn);
@@ -22,9 +34,17 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v){
                 Intent intent = new Intent(MainActivity.this, MessagingActivity.class);
-                //EditText editText = (EditText) findViewById(R.id.editText);
-                //String message = editText.getText().toString();
-                //intent.putExtra(EXTRA_MESSAGE, message);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                EditText editText = (EditText) findViewById(R.id.nameInput);
+                String message = editText.getText().toString();
+
+                if ( message.equals("") ) {
+                    return;
+                }
+                SharedPreferences sharedPref = MainActivity.this.getPreferences(Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString(getString(R.string.pref_name), message);
+                editor.apply();
                 startActivity(intent);
             }
         });
