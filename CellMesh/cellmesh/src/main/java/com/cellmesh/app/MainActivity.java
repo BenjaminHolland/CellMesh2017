@@ -39,7 +39,9 @@ public class MainActivity extends AppCompatActivity
 	protected void onStart()
 	{
 		super.onStart();
-		node.start();
+		if ( node != null ) {
+			node.start();
+		}
 	}
 
 	@Override
