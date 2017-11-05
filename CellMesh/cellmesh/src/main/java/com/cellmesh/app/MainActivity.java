@@ -108,6 +108,10 @@ public class MainActivity extends AppCompatActivity implements INodeListener
 	@Override
 	public void onNamesUpdated(Map<Long, String> names) {
 		names = node.getNamesMap();
+		updatePeerList();
+	}
+
+	public void updatePeerList() {
 		listItems2.clear();
 		Set<Long> ids = node.getPeerIds();
 
@@ -116,19 +120,18 @@ public class MainActivity extends AppCompatActivity implements INodeListener
 				listItems2.add(names.get(id));
 			}
 		}
+
+		adapter2.notifyDataSetChanged();
 	}
 
 	@Override
 	public void onConnected(Set<Long> readOnlyIds, Long newId) {
-		listItems2.add(names.get(newId));
-		adapter2.notifyDataSetChanged();
+		updatePeerList();
 	}
 
 	@Override
 	public void onDisconnected(Set<Long> readOnlyIds, Long oldLinkId) {
-		int index = listItems2.indexOf(names.get(oldLinkId));
-		listItems2.remove(index);
-		adapter2.notifyDataSetChanged();
+		updatePeerList();
 	}
 
 	public void onDataReceived(String newMessage, Long fromLinkId) {
