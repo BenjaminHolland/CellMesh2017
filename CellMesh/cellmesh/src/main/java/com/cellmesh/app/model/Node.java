@@ -204,10 +204,11 @@ public class Node implements TransportListener
 				// Name data received
 				if ( data.indexOf(':') > 0 ) {
 					Long srcId = Long.parseLong(data.substring(0, data.indexOf(':')));
-					String name = data.substring(data.indexOf(':'), data.length());
+					String name = data.substring(data.indexOf(':') + 1, data.length());
 
 					nm.addName(srcId, name);
 				}
+				//break;
 			case SEND_MESSAGE:
 				// Message received
 				listener.onDataReceived(data, link.getNodeId());
