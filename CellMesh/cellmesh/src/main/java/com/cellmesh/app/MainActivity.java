@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements INodeListener
 
 		Message = (EditText) findViewById(R.id.message);
 		//UI Must gather a name and create a listener before calling node.start
-		node = new Node(this,this,"namidy name name");
+		node = new Node(this,this,"floofball");
 		names = node.getNamesMap();
 
 		Button Send_button = (Button) findViewById(R.id.Send);

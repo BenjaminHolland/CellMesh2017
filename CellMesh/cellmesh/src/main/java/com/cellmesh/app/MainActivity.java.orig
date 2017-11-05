@@ -28,6 +28,9 @@ public class MainActivity extends AppCompatActivity implements INodeListener
 	ArrayList<String> listItems = new ArrayList<String>();
 	ArrayAdapter<String> adapter;
 
+	ArrayList<String> listItems2 = new ArrayList<String>();
+	ArrayAdapter<String> adapter2;
+
 	Node node;
 	Map<Long,String> names;
 
@@ -37,11 +40,14 @@ public class MainActivity extends AppCompatActivity implements INodeListener
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		adapter=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems);
+		adapter2=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems2);
 		peersTextView = (ListView) findViewById(R.id.peersTextView);
-		//peersTextView.setAdapter(adapter);
+		peersTextView.setAdapter(adapter2);
+
+		adapter=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems);
 		chatTextView = (ListView) findViewById(R.id.recieved_message);
 		chatTextView.setAdapter(adapter);
+
 		Message = (EditText) findViewById(R.id.message);
 		//UI Must gather a name and create a listener before calling node.start
 		node = new Node(this,this,"namidy name name");
@@ -52,11 +58,8 @@ public class MainActivity extends AppCompatActivity implements INodeListener
 			@Override
 			public void onClick(View v){
 				BroadcastMessage(Message.getText().toString());
-<<<<<<< HEAD
-				Message.setText("");
-=======
 				onDataReceived(Message.getText().toString(), node.getNodeId());
->>>>>>> d97fc35731344bd685181318b0d0ec6ea0fbef95
+				Message.setText("");
 			}
 		});
 	}
@@ -105,16 +108,40 @@ public class MainActivity extends AppCompatActivity implements INodeListener
 	@Override
 	public void onNamesUpdated(Map<Long, String> names) {
 		names = node.getNamesMap();
+		updatePeerList();
+	}
+
+	public void updatePeerList() {
+		listItems2.clear();
+		Set<Long> ids = node.getPeerIds();
+
+		for ( Long id : ids ) {
+			if ( names.get(id) != null ) {
+				listItems2.add(names.get(id));
+			}
+		}
+
+		adapter2.notifyDataSetChanged();
 	}
 
 	@Override
 	public void onConnected(Set<Long> readOnlyIds, Long newId) {
-
+<<<<<<< HEAD
+		if (names.get(newId) == null) {
+			listItems2.add("anonymous");
+		}
+		else{
+			listItems2.add(names.get(newId));
+		}
+		adapter2.notifyDataSetChanged();
+=======
+		updatePeerList();
+>>>>>>> 5e00a13af2cb7308383465e3363f90d68ad50ece
 	}
 
 	@Override
 	public void onDisconnected(Set<Long> readOnlyIds, Long oldLinkId) {
-
+		updatePeerList();
 	}
 
 	public void onDataReceived(String newMessage, Long fromLinkId) {
