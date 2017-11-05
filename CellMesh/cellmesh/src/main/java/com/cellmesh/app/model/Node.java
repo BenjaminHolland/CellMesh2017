@@ -190,7 +190,7 @@ public class Node implements TransportListener
 		10: chat message received
 		 */
 		int op = frameData[0];
-		String data = new String(frameData, 1, frameData.length, StandardCharsets.US_ASCII);
+		String data = new String(frameData, 1, frameData.length - 1, StandardCharsets.US_ASCII);
 
 		switch(op) {
 			case 0:
