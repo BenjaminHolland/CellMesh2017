@@ -24,6 +24,7 @@ public class MainActivity extends Activity
 
         if ( !name.equals("") ) {
             Intent intent = new Intent(MainActivity.this, MessagingActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
         }
         setContentView(R.layout.activity_main);

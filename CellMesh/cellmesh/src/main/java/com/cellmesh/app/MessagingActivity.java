@@ -2,8 +2,10 @@ package com.cellmesh.app;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,7 +44,9 @@ public class MessagingActivity extends Activity implements INodeListener
 		String name = sharedPref.getString(getString(R.string.pref_name), "");
 
 		if ( name.equals("") ) {
-			// go to other activity
+			/*Intent intent = new Intent(MessagingActivity.this, MainActivity.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+			startActivity(intent);*/
 		}
 
 		setContentView(R.layout.actvity_messaging);
@@ -145,7 +149,6 @@ public class MessagingActivity extends Activity implements INodeListener
 	}
 
 	public void onDataReceived(String newMessage, Long fromLinkId) {
-
 		listItems.add(names.get(fromLinkId) + " ---> " + newMessage);
 		adapter.notifyDataSetChanged();
 	}
