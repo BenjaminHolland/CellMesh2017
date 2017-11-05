@@ -56,7 +56,7 @@ public class Node implements TransportListener
 		this.name=name;
 		this.activity = activity;
 		this.listener=listener;
-		SharedPreferences sharedPref = activity.getPreferences(Context.MODE_PRIVATE);
+		SharedPreferences sharedPref = activity.getApplicationContext().getSharedPreferences(activity.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 		nodeId = sharedPref.getLong("nodeID", 0);
 
 		while (nodeId == 0)

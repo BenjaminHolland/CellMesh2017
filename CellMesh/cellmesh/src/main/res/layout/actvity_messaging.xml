@@ -55,7 +55,9 @@
 			<ListView
 				android:id="@+id/recieved_message"
 				android:layout_width="match_parent"
-				android:layout_height="275dp" />
+				android:layout_height="275dp"
+				android:transcriptMode="normal"
+				android:stackFromBottom="true" />
 
 			<EditText
 				android:id="@+id/message"
