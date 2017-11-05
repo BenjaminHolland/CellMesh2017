@@ -7,6 +7,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -22,7 +24,7 @@ public class MainActivity extends AppCompatActivity implements INodeListener
 {
 	private ListView peersTextView;
 	private ListView chatTextView;
-
+	private EditText Message;
 	ArrayList<String> listItems = new ArrayList<String>();
 	ArrayAdapter<String> adapter;
 
@@ -40,14 +42,23 @@ public class MainActivity extends AppCompatActivity implements INodeListener
 		//peersTextView.setAdapter(adapter);
 		chatTextView = (ListView) findViewById(R.id.recieved_message);
 		chatTextView.setAdapter(adapter);
-
+		Message = (EditText) findViewById(R.id.message);
 		//UI Must gather a name and create a listener before calling node.start
-<<<<<<< HEAD
 		node = new Node(this,this,"namidy name name");
-=======
-		node = new Node(this,this,"potato");
->>>>>>> 3d8fd1a3608b50aa6c42f779473a2c192567210b
 		names = node.getNamesMap();
+
+		Button Send_button = (Button) findViewById(R.id.Send);
+		Send_button.setOnClickListener( new View.OnClickListener() {
+			@Override
+			public void onClick(View v){
+				BroadcastMessage(Message.getText().toString());
+<<<<<<< HEAD
+				Message.setText("");
+=======
+				onDataReceived(Message.getText().toString(), node.getNodeId());
+>>>>>>> d97fc35731344bd685181318b0d0ec6ea0fbef95
+			}
+		});
 	}
 
 	@Override
@@ -86,11 +97,9 @@ public class MainActivity extends AppCompatActivity implements INodeListener
 		node.broadcastMessage(message);
 	}
 
+	@Override
 	public void onEmergency(String newMessage, Long fromLinkId) {
 		onDataReceived( "<b>" + newMessage + "</b>", fromLinkId);
-	}
-	public void onNamesUpdated(Map<Long, String> names){
-
 	}
 
 	@Override

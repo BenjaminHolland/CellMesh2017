@@ -28,6 +28,9 @@ public class MainActivity extends AppCompatActivity implements INodeListener
 	ArrayList<String> listItems = new ArrayList<String>();
 	ArrayAdapter<String> adapter;
 
+	ArrayList<String> listItems2 = new ArrayList<String>();
+	ArrayAdapter<String> adapter2;
+
 	Node node;
 	Map<Long,String> names;
 
@@ -37,11 +40,14 @@ public class MainActivity extends AppCompatActivity implements INodeListener
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		adapter=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems);
+		adapter2=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems2);
 		peersTextView = (ListView) findViewById(R.id.peersTextView);
-		//peersTextView.setAdapter(adapter);
+		peersTextView.setAdapter(adapter2);
+
+		adapter=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems);
 		chatTextView = (ListView) findViewById(R.id.recieved_message);
 		chatTextView.setAdapter(adapter);
+
 		Message = (EditText) findViewById(R.id.message);
 		//UI Must gather a name and create a listener before calling node.start
 		node = new Node(this,this,"namidy name name");
@@ -52,8 +58,8 @@ public class MainActivity extends AppCompatActivity implements INodeListener
 			@Override
 			public void onClick(View v){
 				BroadcastMessage(Message.getText().toString());
-				Message.setText("");
 				onDataReceived(Message.getText().toString(), node.getNodeId());
+				Message.setText("");
 			}
 		});
 	}
@@ -106,12 +112,13 @@ public class MainActivity extends AppCompatActivity implements INodeListener
 
 	@Override
 	public void onConnected(Set<Long> readOnlyIds, Long newId) {
-
+		listItems2.add(names.get(newId));
 	}
 
 	@Override
 	public void onDisconnected(Set<Long> readOnlyIds, Long oldLinkId) {
-
+		int index = listItems2.indexOf(names.get(oldLinkId));
+		listItems2.remove(index);
 	}
 
 	public void onDataReceived(String newMessage, Long fromLinkId) {
