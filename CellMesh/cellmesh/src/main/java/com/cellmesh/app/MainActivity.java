@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements INodeListener
 			public void onClick(View v){
 				BroadcastMessage(Message.getText().toString());
 				Message.setText("");
+				onDataReceived(Message.getText().toString(), node.getNodeId());
 			}
 		});
 	}

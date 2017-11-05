@@ -74,6 +74,10 @@ public class Node implements TransportListener
 		);
 	}
 
+	public Long getNodeId() {
+		return nodeId;
+	}
+
 	public Map<Long,String> getNamesMap() {
 		return Collections.unmodifiableMap(nm.getMap());
 	}
