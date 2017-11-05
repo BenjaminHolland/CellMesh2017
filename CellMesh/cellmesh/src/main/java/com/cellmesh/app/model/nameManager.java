@@ -14,15 +14,22 @@ import java.io.UnsupportedEncodingException;
 public class nameManager {
     private SortedMap<Long, String> knownNames;
     private String knownNamesHash;
+    private Boolean hashDirty;
 
     public nameManager(Long nodeId, String myName) {
         this.knownNames = new TreeMap<Long, String>();
+        Log.d("nameManager", "Name manager created for " + myName);
         this.addName(nodeId, myName);
+    }
+
+    public Map<Long, String> getMap() {
+        return knownNames;
     }
 
     public void addName(Long nodeId, String name) {
         this.knownNames.put(nodeId, name);
-        this.updateHash();
+        Log.d("nameManager", "Name added: " + name);
+        hashDirty = true;
     }
 
     private void updateHash() {
@@ -47,12 +54,17 @@ public class nameManager {
             }
 
             this.knownNamesHash = hexStr;
+
+            hashDirty = false;
         } catch (Exception NoSuchAlgorithmException) {
 
         }
     }
 
     public String getHash() {
+        if ( hashDirty ) {
+            updateHash();
+        }
         return this.knownNamesHash;
     }
 }

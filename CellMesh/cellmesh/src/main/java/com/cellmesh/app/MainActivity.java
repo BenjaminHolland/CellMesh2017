@@ -1,135 +1,88 @@
 package com.cellmesh.app;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.Button;
+import android.widget.EditText;
 
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-
-import com.cellmesh.app.model.INodeListener;
-import com.cellmesh.app.model.nameManager;
-import com.cellmesh.app.model.Node;
-
-public class MainActivity extends AppCompatActivity implements INodeListener
+public class MainActivity extends Activity
 {
-	private TextView peersTextView;
-	private TextView framesTextView;
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
 
-	Node node;
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        String name = sharedPref.getString(getString(R.string.pref_name), "");
 
-	private nameManager nm;
+        if ( !name.equals("") ) {
+            Intent intent = new Intent(MainActivity.this, MessagingActivity.class);
+            startActivity(intent);
+        }
+        setContentView(R.layout.activity_main);
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+        Button button = (Button) findViewById(R.id.startBtn);
 
-		peersTextView = (TextView) findViewById(R.id.peersTextView);
-		framesTextView = (TextView) findViewById(R.id.framesTextView);
+        button.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent(MainActivity.this, MessagingActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                EditText editText = (EditText) findViewById(R.id.nameInput);
+                String message = editText.getText().toString();
 
-		//UI Must gather a name and create a listener before calling node.start
-		node = new Node(this,null,"");
+                if ( message.equals("") ) {
+                    return;
+                }
+                SharedPreferences sharedPref = MainActivity.this.getPreferences(Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString(getString(R.string.pref_name), message);
+                editor.apply();
+                startActivity(intent);
+            }
+        });
+    }
 
-		// nm = new nameManager(node.
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+    }
 
-	}
+    @Override
+    protected void onStop()
+    {
+        super.onStop();
+    }
 
-	@Override
-	protected void onStart()
-	{
-		super.onStart();
-		node.start();
-	}
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
 
-	@Override
-	protected void onStop()
-	{
-		super.onStop();
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
 
-		if(node != null)
-			node.stop();
-	}
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings)
+        {
+            return true;
+        }
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu)
-	{
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.menu_main, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item)
-	{
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-
-		//noinspection SimplifiableIfStatement
-		if (id == R.id.action_settings)
-		{
-			return true;
-		}
-
-		return super.onOptionsItemSelected(item);
-	}
-
-	private static boolean started = false;
-
-
-	@Override
-	public void onNamesUpdated(Map<Long, String> names) {
-
-	}
-
-	@Override
-	public void onConnected(Set<Long> readOnlyIds, Long newId) {
-
-	}
-
-	@Override
-	public void onDisconnected(Set<Long> readOnlyIds, Long oldLinkId) {
-
-	}
-
-	@Override
-	public void onDataReceived(String newMessage, Long fromLinkId) {
-		/*
-		00: reserved
-		01: node hash received
-		02: node data received
-		10: chat message received
-		 */
-
-		String op = newMessage.substring(0, 2);
-		String message = newMessage.substring(2);
-
-		if ( newMessage.startsWith("01") ) {
-			// Compare hash to my hash. If equal do nothing.
-			if ( message != nm.getHash() ) {
-
-			}
-		} else if ( newMessage.startsWith("02") ) {
-			// Add name {ID:Name}?
-		} else if ( newMessage.startsWith("10") ) {
-			// Handle message received
-		}
-	}
-
-	@Override
-	public void onDataSent(String newMessage, Long fromLinkId) {
-
-	}
-
-	@Override
-	public void onEmergency(Long fromLinkId) {
-
-	}
+        return super.onOptionsItemSelected(item);
+    }
 } // MainActivity
