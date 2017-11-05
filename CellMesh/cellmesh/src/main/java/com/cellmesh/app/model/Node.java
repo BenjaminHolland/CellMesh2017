@@ -228,7 +228,7 @@ public class Node implements TransportListener
 					nm.addName(srcId, name);
 					doNameUpdate();
 				}
-				//break;
+				break;
 			case SEND_MESSAGE:
 				// Message received
 				listener.onDataReceived(data, link.getNodeId());
