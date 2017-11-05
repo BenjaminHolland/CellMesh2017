@@ -5,9 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -31,11 +31,11 @@ public class MessagingActivity extends Activity implements INodeListener, View.O
 	private ListView peersTextView;
 	private ListView chatTextView;
 	private EditText Message;
-	ArrayList<String> listItems = new ArrayList<String>();
-	ArrayAdapter<String> adapter;
+	private ArrayList<String> messageList = new ArrayList<>();
+	private ArrayAdapter<String> messageAdapter;
 
-	ArrayList<String> listItems2 = new ArrayList<String>();
-	ArrayAdapter<String> adapter2;
+	private ArrayList<String> peerList = new ArrayList<>();
+	private ArrayAdapter<String> peerAdapter;
 
 	Node node;
 	Map<Long,String> names;
@@ -60,19 +60,24 @@ public class MessagingActivity extends Activity implements INodeListener, View.O
 
 		mm = new messageManager();
 
-		adapter2=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems2);
-		peersTextView = (ListView) findViewById(R.id.peersTextView);
-		peersTextView.setAdapter(adapter2);
+		chatTextView = (ListView) findViewById(R.id.messagesListView);
+		peersTextView = (ListView) findViewById(R.id.peersListView);
 
-		adapter=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems);
-		chatTextView = (ListView) findViewById(R.id.recieved_message);
-		chatTextView.setAdapter(adapter);
+		peerAdapter= new ArrayAdapter<>(
+				this,
+				R.layout.peer_layout,
+				peerList);
+		messageAdapter = new ArrayAdapter<>(this,
+				R.layout.message_layout,
+				messageList);
 
+		chatTextView.setAdapter(messageAdapter);
+		peersTextView.setAdapter(peerAdapter);
 		Message = (EditText) findViewById(R.id.message);
+
 		//UI Must gather a name and create a listener before calling node.start
 		node = new Node(MessagingActivity.this,this,name);
 		names = node.getNamesMap();
-
 
 		final Button Send_button = (Button) findViewById(R.id.Send);
 		Message.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -99,6 +104,7 @@ public class MessagingActivity extends Activity implements INodeListener, View.O
 		});
 		Send_button.setOnClickListener(this);
 	}
+
 
 	public void onClick(View v) {
 		String message = Message.getText().toString();
@@ -160,19 +166,19 @@ public class MessagingActivity extends Activity implements INodeListener, View.O
 	}
 
 	public void updatePeerList() {
-		listItems2.clear();
+		peerList.clear();
 		Set<Long> ids = node.getPeerIds();
 
 		for ( Long id : ids ) {
 			if ( names.get(id) != null ) {
 				if ( !id.equals(node.getNodeId()) )
-					listItems2.add(names.get(id));
+					peerList.add(names.get(id));
 			} else {
-				listItems2.add("Unknown");
+				peerList.add("Unknown");
 			}
 		}
 
-		adapter2.notifyDataSetChanged();
+		peerAdapter.notifyDataSetChanged();
 	}
 
 	@Override
@@ -189,12 +195,12 @@ public class MessagingActivity extends Activity implements INodeListener, View.O
 	public void onDataReceived(String newMessage, Long fromLinkId) {
 		Map<Long, Message> messages = node.getMessageHistory();
 
-		listItems.clear();
+		messageList.clear();
 		for ( Map.Entry<Long, Message> message : messages.entrySet() ) {
-			listItems.add(getName(message.getValue().getFromId()) + " --> " + message.getValue().toString());
+			messageList.add(getName(message.getValue().getFromId()) + " --> " + message.getValue().toString());
 		}
 
-		adapter.notifyDataSetChanged();
+		messageAdapter.notifyDataSetChanged();
 	}
 
 	private String getName(Long id) {
@@ -219,6 +225,16 @@ public class MessagingActivity extends Activity implements INodeListener, View.O
 		//noinspection SimplifiableIfStatement
 		if (id == R.id.action_settings)
 		{
+			Intent intent = new Intent(MessagingActivity.this, MainActivity.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+			String message = ""; //reset the name
+
+			SharedPreferences sharedPref = MessagingActivity.this.getApplicationContext().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+			SharedPreferences.Editor editor = sharedPref.edit();
+			editor.putString(getString(R.string.pref_name), message);
+			editor.apply();
+			startActivity(intent);
+			finish();
 			return true;
 		}
 
