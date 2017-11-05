@@ -108,6 +108,14 @@ public class MainActivity extends AppCompatActivity implements INodeListener
 	@Override
 	public void onNamesUpdated(Map<Long, String> names) {
 		names = node.getNamesMap();
+		listItems2.clear();
+		Set<Long> ids = node.getPeerIds();
+
+		for ( Long id : ids ) {
+			if ( names.get(id) != null ) {
+				listItems2.add(names.get(id));
+			}
+		}
 	}
 
 	@Override
