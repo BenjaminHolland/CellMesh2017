@@ -42,7 +42,11 @@ public class MainActivity extends AppCompatActivity implements INodeListener
 		chatTextView.setAdapter(adapter);
 
 		//UI Must gather a name and create a listener before calling node.start
+<<<<<<< HEAD
 		node = new Node(this,this,"namidy name name");
+=======
+		node = new Node(this,this,"potato");
+>>>>>>> 3d8fd1a3608b50aa6c42f779473a2c192567210b
 		names = node.getNamesMap();
 	}
 
@@ -82,9 +86,11 @@ public class MainActivity extends AppCompatActivity implements INodeListener
 		node.broadcastMessage(message);
 	}
 
-	@Override
 	public void onEmergency(String newMessage, Long fromLinkId) {
 		onDataReceived( "<b>" + newMessage + "</b>", fromLinkId);
+	}
+	public void onNamesUpdated(Map<Long, String> names){
+
 	}
 
 	@Override
