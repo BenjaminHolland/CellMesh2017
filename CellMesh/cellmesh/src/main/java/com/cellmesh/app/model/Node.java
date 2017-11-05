@@ -1,6 +1,7 @@
 package com.cellmesh.app.model;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.os.Build;
 import android.util.Log;
 import android.util.Xml;
@@ -22,7 +23,7 @@ import java.util.Queue;
 
 import io.netty.util.AsciiString;
 import io.underdark.Underdark;
-import com.cellmesh.app.MainActivity;
+//import com.cellmesh.app.MainActivity;
 import io.underdark.transport.Link;
 import io.underdark.transport.Transport;
 import io.underdark.transport.TransportKind;
@@ -33,7 +34,7 @@ import io.underdark.util.nslogger.NSLoggerAdapter;
 public class Node implements TransportListener
 {
 	private boolean running;
-	private MainActivity activity;
+	private Activity activity;
 	private long nodeId;
 	private Transport transport;
 	private INodeListener listener;
@@ -46,7 +47,7 @@ public class Node implements TransportListener
 	final private int SEND_NAMEDATA = 2;
 	final private int SEND_MESSAGE = 10;
 
-	public Node(MainActivity activity,INodeListener listener,String name)
+	public Node(Activity activity, INodeListener listener, String name)
 	{
 		this.name=name;
 		this.activity = activity;
