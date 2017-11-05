@@ -126,21 +126,13 @@ public class Node implements TransportListener
 
 	public void broadcastMessage(String frameData)
 	{
+		listener.onDataSent(frameData, nodeId);
 		if(links.isEmpty())
 			return;
-		listener.onDataSent(frameData,nodeId);
 		for(Link link : links)
 			link.sendFrame(addOp(SEND_MESSAGE, frameData));
 	}
 
-	public void broadcastMessage(byte[] frameData) {
-		if ( !links.isEmpty() ) {
-			// listener.onDataSent(frameData, nodeId);
-			for ( Link link : links ) {
-				link.sendFrame(frameData);
-			}
-		}
-	}
 	public void sendMessage(int op, String frameData, Link target)
 	{
 		target.sendFrame(addOp(op, frameData));

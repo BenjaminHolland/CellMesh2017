@@ -102,7 +102,6 @@ public class MessagingActivity extends Activity implements INodeListener, View.O
 		}
 
 		BroadcastMessage(message);
-		onDataReceived(message, node.getNodeId());
 
 		Message.setText("");
 	}
@@ -180,6 +179,7 @@ public class MessagingActivity extends Activity implements INodeListener, View.O
 		updatePeerList();
 	}
 
+	@Override
 	public void onDataReceived(String newMessage, Long fromLinkId) {
 		listItems.add(names.get(fromLinkId) + " ---> " + newMessage);
 		adapter.notifyDataSetChanged();
@@ -187,7 +187,7 @@ public class MessagingActivity extends Activity implements INodeListener, View.O
 
 	@Override
 	public void onDataSent(String newMessage, Long fromLinkId) {
-
+		onDataReceived(newMessage, fromLinkId);
 	}
 
 	@Override
