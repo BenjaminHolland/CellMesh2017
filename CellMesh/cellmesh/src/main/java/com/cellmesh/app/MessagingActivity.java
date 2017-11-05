@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,11 +28,11 @@ public class MessagingActivity extends Activity implements INodeListener, View.O
 	private ListView peersTextView;
 	private ListView chatTextView;
 	private EditText Message;
-	ArrayList<String> listItems = new ArrayList<String>();
-	ArrayAdapter<String> adapter;
+	private ArrayList<String> messageList = new ArrayList<>();
+	private ArrayAdapter<String> messageAdapter;
 
-	ArrayList<String> listItems2 = new ArrayList<String>();
-	ArrayAdapter<String> adapter2;
+	private ArrayList<String> peerList = new ArrayList<>();
+	private ArrayAdapter<String> peerAdapter;
 
 	Node node;
 	Map<Long,String> names;
@@ -54,19 +53,24 @@ public class MessagingActivity extends Activity implements INodeListener, View.O
 
 		setContentView(R.layout.actvity_messaging);
 
-		adapter2=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems2);
-		peersTextView = (ListView) findViewById(R.id.peersTextView);
-		peersTextView.setAdapter(adapter2);
+		chatTextView = (ListView) findViewById(R.id.messagesListView);
+		peersTextView = (ListView) findViewById(R.id.peersListView);
 
-		adapter=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems);
-		chatTextView = (ListView) findViewById(R.id.recieved_message);
-		chatTextView.setAdapter(adapter);
+		peerAdapter= new ArrayAdapter<>(
+				this,
+				android.R.layout.simple_list_item_1,
+				peerList);
+		messageAdapter = new ArrayAdapter<>(this,
+				android.R.layout.simple_list_item_1,
+				messageList);
 
+		chatTextView.setAdapter(messageAdapter);
+		peersTextView.setAdapter(peerAdapter);
 		Message = (EditText) findViewById(R.id.message);
+
 		//UI Must gather a name and create a listener before calling node.start
 		node = new Node(MessagingActivity.this,this,name);
 		names = node.getNamesMap();
-
 
 		final Button Send_button = (Button) findViewById(R.id.Send);
 		Message.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -154,19 +158,19 @@ public class MessagingActivity extends Activity implements INodeListener, View.O
 	}
 
 	public void updatePeerList() {
-		listItems2.clear();
+		peerList.clear();
 		Set<Long> ids = node.getPeerIds();
 
 		for ( Long id : ids ) {
 			if ( names.get(id) != null ) {
 				if ( !id.equals(node.getNodeId()) )
-					listItems2.add(names.get(id));
+					peerList.add(names.get(id));
 			} else {
-				listItems2.add("Unknown");
+				peerList.add("Unknown");
 			}
 		}
 
-		adapter2.notifyDataSetChanged();
+		peerAdapter.notifyDataSetChanged();
 	}
 
 	@Override
@@ -181,8 +185,8 @@ public class MessagingActivity extends Activity implements INodeListener, View.O
 
 	@Override
 	public void onDataReceived(String newMessage, Long fromLinkId) {
-		listItems.add(names.get(fromLinkId) + " ---> " + newMessage);
-		adapter.notifyDataSetChanged();
+		messageList.add(names.get(fromLinkId) + " ---> " + newMessage);
+		messageAdapter.notifyDataSetChanged();
 	}
 
 	@Override
