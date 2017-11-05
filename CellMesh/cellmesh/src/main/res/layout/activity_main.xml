@@ -55,29 +55,23 @@
 			<ListView
 				android:id="@+id/recieved_message"
 				android:layout_width="match_parent"
-				android:layout_height="match_parent" />
+				android:layout_height="275dp" />
+
+			<EditText
+				android:id="@+id/message"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:ems="10"
+				android:inputType="textMultiLine"
+				tools:text="message" />
 
 			<Button
 				android:id="@+id/Send"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:text="Button" />
+				android:text="Send" />
 
 		</LinearLayout>
-
-		<EditText
-			android:id="@+id/message"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:ems="10"
-			android:inputType="textMultiLine"
-			tools:text="message" />
-
-		<Button
-			android:id="@+id/button"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:text="Button" />
 
 	</LinearLayout>
 </RelativeLayout>

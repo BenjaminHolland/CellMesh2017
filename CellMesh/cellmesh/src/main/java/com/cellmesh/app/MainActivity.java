@@ -7,6 +7,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -22,7 +24,7 @@ public class MainActivity extends AppCompatActivity implements INodeListener
 {
 	private ListView peersTextView;
 	private ListView chatTextView;
-
+	private EditText Message;
 	ArrayList<String> listItems = new ArrayList<String>();
 	ArrayAdapter<String> adapter;
 
@@ -40,10 +42,18 @@ public class MainActivity extends AppCompatActivity implements INodeListener
 		//peersTextView.setAdapter(adapter);
 		chatTextView = (ListView) findViewById(R.id.recieved_message);
 		chatTextView.setAdapter(adapter);
-
+		Message = (EditText) findViewById(R.id.message);
 		//UI Must gather a name and create a listener before calling node.start
 		node = new Node(this,this,"namidy name name");
 		names = node.getNamesMap();
+
+		Button Send_button = (Button) findViewById(R.id.Send);
+		Send_button.setOnClickListener( new View.OnClickListener() {
+			@Override
+			public void onClick(View v){
+				BroadcastMessage(Message.getText().toString());
+			}
+		});
 	}
 
 	@Override
